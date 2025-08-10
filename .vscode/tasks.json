@@ -1,0 +1,28 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build and Run Online Kitapçı",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"Write-Host 'Starting Online Kitapçı Application...' -ForegroundColor Green; cd kitapMagazaApi; Start-Process powershell -ArgumentList '-NoExit', '-Command', 'dotnet run --urls=https://localhost:7000;http://localhost:7001' -WindowStyle Normal; Start-Sleep 5; cd ../kitapMagazaMvc; Start-Process powershell -ArgumentList '-NoExit', '-Command', 'dotnet run --urls=https://localhost:5001;http://localhost:5000' -WindowStyle Normal; Write-Host 'API: https://localhost:7000/swagger' -ForegroundColor Yellow; Write-Host 'MVC: https://localhost:5001' -ForegroundColor Yellow"
+			],
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "HTTP Build and Run Kitap Mağazası",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-Command",
+				"Write-Host 'Starting Kitap Mağazası Application with HTTP...' -ForegroundColor Green; cd kitapMagazaApi; Start-Process powershell -ArgumentList '-NoExit', '-Command', 'dotnet run --urls=http://localhost:7001' -WindowStyle Normal; Start-Sleep 5; cd ../kitapMagazaMvc; Start-Process powershell -ArgumentList '-NoExit', '-Command', 'dotnet run --urls=http://localhost:5000' -WindowStyle Normal; Write-Host 'API: http://localhost:7001/swagger' -ForegroundColor Yellow; Write-Host 'MVC: http://localhost:5000' -ForegroundColor Yellow"
+			],
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}

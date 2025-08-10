@@ -1,0 +1,58 @@
+@{
+    Layout = "_Layout";
+}
+
+@model kitapMagazaMvc.Models.CheckoutViewModel
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">
+                        <i class="fas fa-credit-card me-2"></i>Sipariş Ver
+                    </h2>
+                    
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="UserId" class="form-label">Kullanıcı Seçimi</label>
+                            <select class="form-select" id="UserId" name="UserId" required>
+                                <option value="">Lütfen kullanıcı seçiniz</option>
+                                @foreach (var user in Model.Users)
+                                {
+                                    <option value="@user.Id" selected="@(Model.UserId == user.Id)">
+                                        @user.FullName (@user.Email)
+                                    </option>
+                                }
+                            </select>
+                            @Html.ValidationMessageFor(m => m.UserId, "", new { @class = "text-danger" })
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="ShippingAddress" class="form-label">Teslimat Adresi</label>
+                            <textarea class="form-control" id="ShippingAddress" name="ShippingAddress" 
+                                      rows="3" required placeholder="Tam adresinizi giriniz...">@Model.ShippingAddress</textarea>
+                            @Html.ValidationMessageFor(m => m.ShippingAddress, "", new { @class = "text-danger" })
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Bilgi:</strong> Bu demo uygulamada gerçek ödeme işlemi yapılmamaktadır. 
+                            Sipariş bilgileri sadece test amaçlı kaydedilecektir.
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-check me-2"></i>Siparişi Tamamla
+                            </button>
+                            <a href="@Url.Action("Cart", "kitaps")" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Sepete Geri Dön
+                            </a>
+                        </div>
+                        @Html.AntiForgeryToken()
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

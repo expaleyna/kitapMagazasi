@@ -1,0 +1,218 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Sepetim";
+}
+
+@model kitapMagazaMvc.Models.Cart
+
+<div class="container my-5">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")" class="text-decoration-none">Anasayfa</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "kitaps")" class="text-decoration-none">Kitaplar</a></li>
+                    <li class="breadcrumb-item active">Sepetim</li>
+                </ol>
+            </nav>
+            <div class="d-flex align-items-center mb-3">
+                <div class="bg-gradient-primary rounded-circle p-3 me-3">
+                    <i class="fas fa-shopping-bag text-white fs-4"></i>
+                </div>
+                <div>
+                    <h2 class="mb-0 fw-bold">Sepetim</h2>
+                    <p class="text-muted mb-0">Seçtiğiniz kitapları gözden geçirin ve siparişinizi tamamlayın</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    @if (Model.Items.Any())
+    {
+        <div class="row g-4">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <div class="filter-section p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-list-ul me-2 icon-primary"></i>
+                            Sepetteki Ürünler (@Model.GetTotalItems() adet)
+                        </h5>
+                        <form method="post" action="@Url.Action("ClearCart", "kitaps")" style="display: inline;">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Sepeti temizlemek istediğinizden emin misiniz?')">
+                                <i class="fas fa-trash me-1"></i>Sepeti Temizle
+                            </button>
+                            @Html.AntiForgeryToken()
+                        </form>
+                    </div>
+                    
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="cart-item">
+                            <div class="row align-items-center">
+                                <div class="col-md-2 col-sm-3">
+                                    <div class="position-relative">
+                                        <img src="@(item.ImageUrl ?? "/images/no-image.jpg")" 
+                                             class="img-fluid rounded-3 shadow-sm"
+                                             alt="@item.Title"
+                                             style="height: 100px; width: 80px; object-fit: cover;"
+                                             onerror="this.src='/images/no-image.jpg'">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-9">
+                                    <h6 class="mb-2 fw-bold text-dark">@item.Title</h6>
+                                    <p class="text-muted small mb-1">
+                                        <i class="fas fa-user me-1"></i>@item.Author
+                                    </p>
+                                    <span class="price-tag">₺@item.Price.ToString("N2")</span>
+                                </div>
+                                <div class="col-md-3 col-6 mt-3 mt-md-0">
+                                    <label class="form-label small fw-bold text-muted">Miktar</label>
+                                    <form method="post" action="@Url.Action("UpdateCart", "kitaps")" 
+                                          class="d-flex align-items-center">
+                                        <input type="hidden" name="kitapId" value="@item.KitapId" />
+                                        <div class="input-group" style="max-width: 120px;">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decreaseQuantity(this)">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input type="number" class="form-control form-control-sm text-center quantity-input" 
+                                                   name="quantity" value="@item.Quantity" min="0" max="10"
+                                                   onchange="this.form.submit()">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseQuantity(this)">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        @Html.AntiForgeryToken()
+                                    </form>
+                                </div>
+                                <div class="col-md-2 col-6 mt-3 mt-md-0 text-md-end">
+                                    <div class="d-flex flex-column align-items-md-end">
+                                        <h6 class="mb-2 fw-bold text-primary">₺@item.TotalPrice.ToString("N2")</h6>
+                                        <form method="post" action="@Url.Action("RemoveFromCart", "kitaps")" 
+                                              style="display: inline;">
+                                            <input type="hidden" name="kitapId" value="@item.KitapId" />
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                                    onclick="return confirm('Bu ürünü sepetten çıkarmak istediğinizden emin misiniz?')"
+                                                    title="Sepetten Çıkar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            @Html.AntiForgeryToken()
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="cart-summary sticky-top" style="top: 100px;">
+                    <div class="d-flex align-items-center mb-4">
+                        <i class="fas fa-calculator me-3 fs-4 icon-primary"></i>
+                        <h5 class="mb-0 fw-bold">Sipariş Özeti</h5>
+                    </div>
+                    
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Toplam Ürün:</span>
+                            <span class="fw-semibold">@Model.GetTotalItems() adet</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Ara Toplam:</span>
+                            <span class="fw-semibold">₺@Model.GetTotalPrice().ToString("N2")</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Kargo:</span>
+                            <span class="text-success fw-semibold">
+                                <i class="fas fa-shipping-fast me-1"></i>Ücretsiz
+                            </span>
+                        </div>
+                        @if(Model.GetTotalPrice() >= 100)
+                        {
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">İndirim:</span>
+                                <span class="text-success fw-semibold">-%5</span>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="h6 fw-bold">Toplam:</span>
+                        <span class="h5 fw-bold text-primary">₺@Model.GetTotalPrice().ToString("N2")</span>
+                    </div>
+                    
+                    <div class="d-grid gap-3">
+                        <a href="@Url.Action("Checkout", "kitaps")" 
+                           class="btn btn-primary btn-lg">
+                            <i class="fas fa-credit-card me-2"></i>Sipariş Ver
+                        </a>
+                        <a href="@Url.Action("Index", "kitaps")" 
+                           class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Alışverişe Devam Et
+                        </a>
+                    </div>
+                    
+                    <!-- Security Info -->
+                    <div class="mt-4 p-3 bg-light rounded-3">
+                        <div class="d-flex align-items-center text-muted small">
+                            <i class="fas fa-shield-alt me-2 text-success"></i>
+                            <span>Güvenli ödeme sistemi ile korunuyorsunuz</span>
+                        </div>
+                        <div class="d-flex align-items-center text-muted small mt-1">
+                            <i class="fas fa-truck me-2 text-primary"></i>
+                            <span>100₺ ve üzeri siparişlerde ücretsiz kargo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Empty Cart State -->
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <div class="bg-light rounded-circle d-inline-flex p-4 mb-3">
+                            <i class="fas fa-shopping-bag fa-3x text-muted"></i>
+                        </div>
+                    </div>
+                    <h4 class="fw-bold mb-3">Sepetiniz boş</h4>
+                    <p class="text-muted mb-4">Alışverişe başlamak için kitap koleksiyonumuzu keşfedin ve favori kitaplarınızı sepete ekleyin.</p>
+                    <div class="d-grid gap-2 d-md-block">
+                        <a href="@Url.Action("Index", "kitaps")" class="btn btn-primary btn-lg">
+                            <i class="fas fa-kitap me-2"></i>Kitapları Keşfet
+                        </a>
+                        <a href="@Url.Action("Index", "Categories")" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-layer-group me-2"></i>Kategoriler
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+function increaseQuantity(btn) {
+    const input = btn.previousElementSibling;
+    const currentValue = parseInt(input.value) || 0;
+    if (currentValue < parseInt(input.max)) {
+        input.value = currentValue + 1;
+        input.form.submit();
+    }
+}
+
+function decreaseQuantity(btn) {
+    const input = btn.nextElementSibling;
+    const currentValue = parseInt(input.value) || 0;
+    if (currentValue > 0) {
+        input.value = currentValue - 1;
+        input.form.submit();
+    }
+}
+</script>

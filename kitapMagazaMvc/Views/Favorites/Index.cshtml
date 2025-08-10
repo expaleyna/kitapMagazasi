@@ -1,0 +1,72 @@
+@{
+    Layout = "_Layout";
+}
+
+@model List<kitapMagazaMvc.Models.FavoriteDto>
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>
+                <i class="fas fa-heart me-2 text-danger"></i>Favorilerim
+            </h2>
+            <p class="text-muted">Beğendiğiniz kitapları buradan takip edebilirsiniz.</p>
+        </div>
+    </div>
+    
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var favorite in Model)
+            {
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="card kitap-card border-0 shadow-sm h-100">
+                        <img src="@(favorite.kitapImageUrl ?? "/images/no-image.jpg")" 
+                             class="card-img-top" 
+                             alt="@favorite.kitapTitle"
+                             onerror="this.src='/images/no-image.jpg'">
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title">@favorite.kitapTitle</h6>
+                            <p class="text-muted small">@favorite.kitapAuthor</p>
+                            <p class="text-muted small">
+                                <i class="fas fa-heart text-danger me-1"></i>
+                                @favorite.CreatedDate.ToString("dd.MM.yyyy") tarihinde eklendi
+                            </p>
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="h6 text-primary mb-0">₺@favorite.kitapPrice.ToString("N2")</span>
+                                </div>
+                                <div class="btn-group w-100" role="group">
+                                    <a href="@Url.Action("Details", "kitaps", new { id = favorite.kitapId })" 
+                                       class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>İncele
+                                    </a>
+                                    <form method="post" action="@Url.Action("Remove", "Favorites")" class="flex-grow-1">
+                                        <input type="hidden" name="userId" value="@favorite.UserId" />
+                                        <input type="hidden" name="kitapId" value="@favorite.kitapId" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100"
+                                                onclick="return confirm('Bu kitabı favorilerden kaldırmak istediğinizden emin misiniz?')">
+                                            <i class="fas fa-trash me-1"></i>Kaldır
+                                        </button>
+                                        @Html.AntiForgeryToken()
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-heart fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">Henüz favori kitabınız yok</h4>
+            <p class="text-muted">Beğendiğiniz kitapları favorilere ekleyerek daha sonra kolayca bulabilirsiniz.</p>
+            <a href="@Url.Action("Index", "kitaps")" class="btn btn-primary">
+                <i class="fas fa-kitap me-2"></i>Kitapları İncele
+            </a>
+        </div>
+    }
+</div>

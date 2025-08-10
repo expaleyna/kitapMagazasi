@@ -1,0 +1,57 @@
+@{
+    Layout = "_Layout";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="text-center mb-4">Bize Ulaşın</h1>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-info-circle me-2 text-primary"></i>İletişim Bilgileri
+                            </h5>
+                            <hr>
+                            <p><i class="fas fa-envelope me-2 text-primary"></i><strong>E-posta:</strong> info@onlinekitapci.com</p>
+                            <p><i class="fas fa-phone me-2 text-primary"></i><strong>Telefon:</strong> 0212 123 45 67</p>
+                            <p><i class="fas fa-map-marker-alt me-2 text-primary"></i><strong>Adres:</strong> İstanbul, Türkiye</p>
+                            <p><i class="fas fa-clock me-2 text-primary"></i><strong>Çalışma Saatleri:</strong> Pazartesi - Cumartesi 09:00 - 18:00</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-envelope me-2 text-primary"></i>Mesaj Gönderin
+                            </h5>
+                            <hr>
+                            <form method="post">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Adınız</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">E-posta</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message" class="form-label">Mesajınız</label>
+                                    <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-paper-plane me-2"></i>Mesajı Gönder
+                                </button>
+                                @Html.AntiForgeryToken()
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

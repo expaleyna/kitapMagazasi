@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Online Kitapçı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="@Url.Action("Index", "Home")">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-book-reader me-2 fs-4"></i>
+                        <span class="fw-bold">Online Kitapçı</span>
+                    </div>
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto ms-lg-4">
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="@Url.Action("Index", "Home")">
+                                <i class="fas fa-home me-2"></i>Anasayfa
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="@Url.Action("Index", "Kitaplar")">
+                                <i class="fas fa-book me-2"></i>Kitaplar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="@Url.Action("Index", "Categories")">
+                                <i class="fas fa-layer-group me-2"></i>Kategoriler
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="@Url.Action("About", "Home")">
+                                <i class="fas fa-info-circle me-2"></i>Hakkımızda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="@Url.Action("Contact", "Home")">
+                                <i class="fas fa-envelope me-2"></i>İletişim
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (Context.Session.GetString("UserRole") == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link px-3" href="@Url.Action("Index", "Admin")">
+                                    <i class="fas fa-cog me-2"></i>
+                                    <span class="d-lg-inline d-none">Admin Panel</span>
+                                </a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="@Url.Action("Index", "Favorites", new { userId = 2 })">
+                                <i class="fas fa-heart me-2"></i>
+                                <span class="d-lg-inline d-none">Favoriler</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3 position-relative" href="@Url.Action("Cart", "Kitaplar")">
+                                <i class="fas fa-shopping-bag me-2"></i>
+                                <span class="d-lg-inline d-none">Sepet</span>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" id="cart-badge" style="font-size: 0.7rem;">
+                                    0
+                                </span>
+                            </a>
+                        </li>
+                        @if (!string.IsNullOrEmpty(Context.Session.GetString("UserId")))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle px-3" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user me-2"></i>
+                                    <span class="d-lg-inline d-none">@Context.Session.GetString("UserName")</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="@Url.Action("Logout", "Auth")">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Çıkış Yap
+                                    </a></li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link px-3" href="@Url.Action("Login", "Auth")">
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    <span class="d-lg-inline d-none">Giriş Yap</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        @if (TempData["Success"] != null)
+        {
+            <div class="container mt-3">
+                <div class="alert alert-success alert-dismissible fade show alert-custom" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle me-3 fs-5"></i>
+                        <span>@TempData["Success"]</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="container mt-3">
+                <div class="alert alert-danger alert-dismissible fade show alert-custom" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-3 fs-5"></i>
+                        <span>@TempData["Error"]</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        }
+
+        @RenderBody()
+    </main>
+
+    <footer class="footer-custom text-light py-5 mt-5">
+        <div class="container position-relative">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-book-reader me-3 fs-3 icon-primary"></i>
+                        <h5 class="mb-0 fw-bold">Online Kitapçı</h5>
+                    </div>
+                    <p class="text-light opacity-75 mb-3">En kaliteli kitapları en uygun fiyatlarla bulabileceğiniz güvenilir adres. Okuma tutkularınızı besleyin.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-light fs-5"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-light fs-5"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light fs-5"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-light fs-5"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="fw-bold mb-3">Hızlı Linkler</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="@Url.Action("Index", "Home")" class="text-light text-decoration-none opacity-75"><i class="fas fa-chevron-right me-2 small"></i>Anasayfa</a></li>
+                        <li class="mb-2"><a href="@Url.Action("Index", "Kitaplar")" class="text-light text-decoration-none opacity-75"><i class="fas fa-chevron-right me-2 small"></i>Kitaplar</a></li>
+                        <li class="mb-2"><a href="@Url.Action("Index", "Categories")" class="text-light text-decoration-none opacity-75"><i class="fas fa-chevron-right me-2 small"></i>Kategoriler</a></li>
+                        <li class="mb-2"><a href="@Url.Action("About", "Home")" class="text-light text-decoration-none opacity-75"><i class="fas fa-chevron-right me-2 small"></i>Hakkımızda</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-bold mb-3">Kategoriler</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none opacity-75"><i class="fas fa-chevron-right me-2 small"></i>Roman</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none opacity-75"><i class="fas fa-chevron-right me-2 small"></i>Bilim Kurgu</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none opacity-75"><i class="fas fa-chevron-right me-2 small"></i>Tarih</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none opacity-75"><i class="fas fa-chevron-right me-2 small"></i>Çocuk Kitapları</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-bold mb-3">İletişim</h6>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-envelope me-3 icon-primary"></i>
+                        <span class="text-light opacity-75">info@onlinekitapci.com</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-phone me-3 icon-primary"></i>
+                        <span class="text-light opacity-75">0212 123 45 67</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-map-marker-alt me-3 icon-primary"></i>
+                        <span class="text-light opacity-75">İstanbul, Türkiye</span>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 opacity-25">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-light opacity-75">&copy; 2024 Online Kitapçı. Tüm hakları saklıdır.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-light text-decoration-none opacity-75 me-3">Gizlilik Politikası</a>
+                    <a href="#" class="text-light text-decoration-none opacity-75">Kullanım Şartları</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

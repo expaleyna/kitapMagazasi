@@ -1,0 +1,108 @@
+@model kitapMagazaMvc.Models.CategoryDto
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Anasayfa</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Categories")">Kategoriler</a></li>
+                    <li class="breadcrumb-item active">@Model.Name</li>
+                </ol>
+            </nav>
+            
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-bookmark fa-3x text-primary mb-3"></i>
+                    <h1>@Model.Name</h1>
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <p class="text-muted">@Model.Description</p>
+                    }
+                    <p class="text-primary"><strong>@Model.KitapCount kitap bulundu</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    @if (((List<kitapMagazaMvc.Models.KitapDto>)ViewBag.Kitaplar).Any())
+    {
+        <div class="row g-4">
+            @foreach (var kitap in (List<kitapMagazaMvc.Models.KitapDto>)ViewBag.Kitaplar)
+            {
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="card kitap-card border-0 shadow-sm h-100">
+                        <img src="@(kitap.ImageUrl ?? "/images/no-image.jpg")" 
+                             class="card-img-top" 
+                             alt="@kitap.Title"
+                             style="height: 300px; object-fit: cover;">
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@kitap.Title</h5>
+                            <p class="card-text text-muted">@kitap.Author</p>
+                            
+                            @if (!string.IsNullOrEmpty(kitap.Description))
+                            {
+                                <p class="card-text">
+                                    @(kitap.Description.Length > 100 ? kitap.Description.Substring(0, 100) + "..." : kitap.Description)
+                                </p>
+                            }
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="h5 text-primary mb-0">₺@kitap.Price</span>
+                                    <small class="text-muted">Stok: @kitap.Stock</small>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <a href="@Url.Action("Details", "Kitaplar", new { id = kitap.Id })" 
+                                       class="btn btn-outline-primary btn-sm me-2">
+                                        <i class="fas fa-eye"></i> Detay
+                                    </a>
+                                    
+                                    @if (kitap.Stock > 0)
+                                    {
+                                        <button class="btn btn-primary btn-sm add-to-cart" 
+                                                data-kitap-id="@kitap.Id">
+                                            <i class="fas fa-shopping-cart"></i> Sepete Ekle
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-secondary btn-sm" disabled>
+                                            <i class="fas fa-times"></i> Stokta Yok
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <h4>Bu kategoride henüz kitap bulunmuyor</h4>
+                    <p class="mb-0">Yakında yeni kitaplar eklenecek.</p>
+                </div>
+            </div>
+        </div>
+    }
+    
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <a href="@Url.Action("Index", "Categories")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Kategorilere Dön
+            </a>
+        </div>
+    </div>
+</div>

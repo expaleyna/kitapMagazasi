@@ -1,0 +1,265 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+@model List<kitapMagazaMvc.Models.KitapDto>
+
+<div class="hero-section position-relative">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-3 fw-bold mb-4 text-white">
+                    Kitap Dünyasına Hoş Geldiniz
+                </h1>
+                <p class="lead mb-5 text-white-50">
+                    Binlerce kitap arasından favori yazarlarınızı ve türlerinizi keşfedin. 
+                    Kaliteli içerik, uygun fiyat ve hızlı teslimat garantisi ile.
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                    <a href="@Url.Action("Index", "kitaps")" class="btn btn-light btn-lg px-5">
+                        <i class="fas fa-search me-2"></i>Kitapları Keşfet
+                    </a>
+                    <a href="@Url.Action("Index", "Categories")" class="btn btn-outline-light btn-lg px-5">
+                        <i class="fas fa-layer-group me-2"></i>Kategoriler
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="row mt-5 pt-5">
+            <div class="col-md-3 col-6">
+                <div class="text-center glass-effect p-3 rounded-3">
+                    <h3 class="fw-bold text-white mb-1">1000+</h3>
+                    <p class="small text-white-50 mb-0">Kitap</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="text-center glass-effect p-3 rounded-3">
+                    <h3 class="fw-bold text-white mb-1">50+</h3>
+                    <p class="small text-white-50 mb-0">Kategori</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="text-center glass-effect p-3 rounded-3">
+                    <h3 class="fw-bold text-white mb-1">24/7</h3>
+                    <p class="small text-white-50 mb-0">Destek</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="text-center glass-effect p-3 rounded-3">
+                    <h3 class="fw-bold text-white mb-1">Ücretsiz</h3>
+                    <p class="small text-white-50 mb-0">Kargo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <!-- Kategoriler Bölümü -->
+    <section class="mb-5">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="d-inline-flex align-items-center mb-3">
+                    <div class="bg-gradient-primary rounded-circle p-2 me-3">
+                        <i class="fas fa-layer-group text-white fs-4"></i>
+                    </div>
+                    <h2 class="mb-0 fw-bold">Popüler Kategoriler</h2>
+                </div>
+                <p class="text-muted">İlgi alanınıza göre kitapları kategoriler halinde keşfedin</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            @foreach (var category in (List<kitapMagazaMvc.Models.CategoryDto>)ViewBag.Categories)
+            {
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                    <div class="card category-card h-100 text-center">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <div class="bg-light rounded-circle p-3 d-inline-flex">
+                                    @switch(category.Name.ToLower())
+                                    {
+                                        case "roman":
+                                            <i class="fas fa-kitap-open fa-2x icon-primary"></i>
+                                            break;
+                                        case "bilim kurgu":
+                                            <i class="fas fa-rocket fa-2x icon-primary"></i>
+                                            break;
+                                        case "tarih":
+                                            <i class="fas fa-landmark fa-2x icon-primary"></i>
+                                            break;
+                                        case "çocuk":
+                                            <i class="fas fa-child fa-2x icon-primary"></i>
+                                            break;
+                                        case "felsefe":
+                                            <i class="fas fa-brain fa-2x icon-primary"></i>
+                                            break;
+                                        default:
+                                            <i class="fas fa-kitapmark fa-2x icon-primary"></i>
+                                            break;
+                                    }
+                                </div>
+                            </div>
+                            <h6 class="card-title fw-bold mb-2">@category.Name</h6>
+                            <p class="text-muted small mb-3">                                        <span class="badge bg-primary rounded-pill small">@category.KitapCount kitap</span></p>
+                            <a href="@Url.Action("Details", "Categories", new { id = category.Id })" 
+                               class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fas fa-arrow-right me-1"></i>Keşfet
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- Öne Çıkan Kitaplar -->
+    <section class="mb-5">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="d-inline-flex align-items-center mb-3">
+                    <div class="bg-gradient-primary rounded-circle p-2 me-3">
+                        <i class="fas fa-star text-white fs-4"></i>
+                    </div>
+                    <h2 class="mb-0 fw-bold">Öne Çıkan Kitaplar</h2>
+                </div>
+                <p class="text-muted">En çok okunan ve beğenilen kitaplar</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            @foreach (var kitap in (List<kitapMagazaMvc.Models.KitapDto>)ViewBag.FeaturedKitaplar)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <div class="card kitap-card h-100">
+                        <div class="position-relative overflow-hidden">
+                            <img src="@(kitap.ImageUrl ?? "/images/no-image.jpg")" 
+                                 class="card-img-top" 
+                                 alt="@kitap.Title"
+                                 onerror="this.src='/images/no-image.jpg'">
+                            <div class="position-absolute top-0 start-0 p-2">
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-star me-1"></i>Öne Çıkan
+                                </span>
+                            </div>
+                            @if(kitap.Stock <= 5 && kitap.Stock > 0)
+                            {
+                                <div class="position-absolute top-0 end-0 p-2">
+                                    <span class="badge bg-danger">Son @kitap.Stock</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-body d-flex flex-column p-3">
+                            <h6 class="card-title fw-bold mb-2 text-truncate" title="@kitap.Title">@kitap.Title</h6>
+                            <p class="text-muted small mb-2">
+                                <i class="fas fa-user me-1"></i>@kitap.Author
+                            </p>
+                            <p class="text-muted small flex-grow-1 kitap-description">
+                                @(kitap.Description?.Length > 80 ? kitap.Description.Substring(0, 80) + "..." : kitap.Description)
+                            </p>
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="h5 text-primary mb-0 fw-bold">₺@kitap.Price.ToString("N2")</span>
+                                    <small class="text-muted">
+                                        <i class="fas fa-box me-1"></i>@kitap.Stock adet
+                                    </small>
+                                </div>
+                                <div class="d-grid">
+                                    <a href="@Url.Action("Details", "kitaps", new { id = kitap.Id })" 
+                                       class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye me-2"></i>Detayları Görüntüle
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-5">
+            <a href="@Url.Action("Index", "kitaps")" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-kitap-open me-2"></i>Tüm Kitapları Görüntüle
+            </a>
+        </div>
+    </section>
+
+    <!-- Özellikler -->
+    <section class="py-5">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="d-inline-flex align-items-center mb-3">
+                    <div class="bg-gradient-primary rounded-circle p-2 me-3">
+                        <i class="fas fa-shield-alt text-white fs-4"></i>
+                    </div>
+                    <h2 class="mb-0 fw-bold">Neden Bizi Tercih Etmelisiniz?</h2>
+                </div>
+                <p class="text-muted">Size en iyi hizmeti sunmak için buradayız</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center p-4 h-100">
+                    <div class="mb-4">
+                        <div class="bg-gradient-primary rounded-circle p-4 d-inline-flex">
+                            <i class="fas fa-shipping-fast fa-2x text-white"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-3">Hızlı Teslimat</h5>
+                    <p class="text-muted">Aynı gün kargo ile kitaplarınız hızla elinizde. 100₺ üzeri siparişlerde ücretsiz.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center p-4 h-100">
+                    <div class="mb-4">
+                        <div class="bg-gradient-primary rounded-circle p-4 d-inline-flex">
+                            <i class="fas fa-shield-alt fa-2x text-white"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-3">Güvenli Alışveriş</h5>
+                    <p class="text-muted">256 bit SSL sertifikası ile güvenli ödeme. Kişisel bilgileriniz tamamen korunur.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center p-4 h-100">
+                    <div class="mb-4">
+                        <div class="bg-gradient-primary rounded-circle p-4 d-inline-flex">
+                            <i class="fas fa-undo fa-2x text-white"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-3">Kolay İade</h5>
+                    <p class="text-muted">14 gün içinde koşulsuz iade garantisi. Memnun kalmazsanız paranızı iade ediyoruz.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="text-center p-4 h-100">
+                    <div class="mb-4">
+                        <div class="bg-gradient-primary rounded-circle p-4 d-inline-flex">
+                            <i class="fas fa-headset fa-2x text-white"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold mb-3">24/7 Destek</h5>
+                    <p class="text-muted">Müşteri hizmetlerimiz her zaman yanınızda. Sorularınız için bize ulaşın.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+.bg-gradient-primary {
+    background: var(--gradient-purple) !important;
+}
+
+.kitap-description {
+    min-height: 60px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+</style>

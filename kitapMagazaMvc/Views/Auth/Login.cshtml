@@ -1,0 +1,70 @@
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-circle text-primary fs-1 mb-3"></i>
+                        <h3 class="fw-bold">Giriş Yap</h3>
+                        <p class="text-muted">Hesabınıza giriş yapın</p>
+                    </div>
+
+                    <form method="post" asp-action="Login" asp-controller="Auth">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="mb-3">
+                            <label class="form-label">E-posta</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <input type="email" class="form-control" name="email" required 
+                                       placeholder="ornek@email.com">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Şifre</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" name="password" required 
+                                       placeholder="Şifrenizi girin">
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center">
+                        <p class="text-muted mb-0">
+                            Hesabınız yok mu? 
+                            <a href="@Url.Action("Register")" class="text-decoration-none">
+                                Kayıt olun
+                            </a>
+                        </p>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <small class="text-muted">
+                            <strong>Demo Hesaplar:</strong><br>
+                            Admin: admin@kitapMagaza.com / admin123<br>
+                            Kullanıcı: ahmet@example.com / user123
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
