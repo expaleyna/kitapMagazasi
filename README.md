@@ -57,7 +57,3 @@ MVC Uygulaması: https://localhost:5001
 1. Önce API'yi başlatın
 2. Ardından MVC uygulamasını çalıştırın
 3. Tarayıcıda https://localhost:5001 adresine gidin
-
-## Geliştirici
-
-Bu proje üniversite öğrencisi tarafından ödev projesi olarak geliştirilmiştir." 
